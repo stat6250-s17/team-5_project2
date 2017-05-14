@@ -36,3 +36,27 @@
 
 
 * setup environmental parameters;
+
+%let ClassEnroll14F_Data_URL =
+
+https://github.com/stat6250/team-5_project2/blob/master/ClassEnrollment14F.txt?raw=true
+;
+
+* load raw Class Enrollment 2014 dataset over the wire;
+filename tempfile TEMP;
+proc http
+    method="get"
+    url="&ClassEnroll14F_Data_URL."
+    out=tempfile
+    ;
+run;
+proc import
+    out=ClassEnroll14F_raw
+	datafile=tempfile
+    dbms=txt
+	replace;
+	delimiter=',';
+	getnames=yes;
+ 	guessingrows=100;
+run;
+
