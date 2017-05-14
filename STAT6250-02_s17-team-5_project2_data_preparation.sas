@@ -4,97 +4,95 @@
 *******************************************************************************;
 
 *
-[Dataset 1 Name] ClassEnrollment14F12
+[Dataset 1 Name] ClassEnrollment14F12.csv
 
 [Dataset Description] This dataset pertains to Class Enrollment records
 for 2014 forstudents by gender and ethnicity and by type of course and 
 specific class. A record is created for every class, gender and ethnicity 
 in a school that has students enrolled on Information Day and includes 
 unduplicated count of students in a class. From this dataset, which
-was too large to upload to Github, 2 smaller files were created in 
-Escel - one pertaining to class enrollment by 12th grade female students
-and one pertaining to class enrollment by 12th grade male students.
+was too large to upload to Github, this smaller file was created in 
+Escel - pertaining to class enrollment by 12th grade female students.
+Some column names were shortened and rows that included multiple courses
+that would make reading data problematic were deleted.
 
 [Experimental Unit Description] Schools within California 
 
-[Number of Observations]1638659              [Number of Features] 23
+[Number of Observations]144,893              [Number of Features] 22
 
 [Data Source]http://www3.cde.ca.gov/download/dq/ClassEnrollment14.zip
 
 [Data Dictionary]http://www.cde.ca.gov/ds/sd/df/fsclassenroll.asp
 
-[Unique ID Schema] ‚ÄúDistrictCode, Schoolcode, ClassID, Coursecode, 
-ClassCourseIDù are all form a Primary key, a unique ID.
+[Unique ID Schema] ClassID, GradeLevel,and GenderCodeù form a Primary 
+key, a unique ID.
 
 --
 
-[Dataset 2 Name] ClassEnrollment14M12
+[Dataset 2 Name] ClassEnrollment14M12.csv
 
 [Dataset Description] This dataset pertains to Class Enrollment records
 for 2014 forstudents by gender and ethnicity and by type of course and 
 specific class. A record is created for every class, gender and ethnicity 
 in a school that has students enrolled on Information Day and includes 
 unduplicated count of students in a class. From this dataset, which
-was too large to upload to Github, 2 smaller files were created in 
-Escel - one pertaining to class enrollment by 12th grade female students
-and one pertaining to class enrollment by 12th grade male students.
+was too large to upload to Github, this smaller file was created in 
+Escel - pertaining to class enrollment by 12th grade male students.
+Some column names were shortened and rows that included multiple courses
+that would make reading data problematic were deleted.
 
 [Experimental Unit Description] Schools within California 
 
-[Number of Observations]1638659              [Number of Features] 23
+[Number of Observations]155,153              [Number of Features] 22
 
 [Data Source]http://www3.cde.ca.gov/download/dq/ClassEnrollment14.zip
 
 [Data Dictionary]http://www.cde.ca.gov/ds/sd/df/fsclassenroll.asp
 
-[Unique ID Schema] ‚ÄúDistrictCode, Schoolcode, ClassID, Coursecode, 
-ClassCourseIDù are all form a Primary key, a unique ID.
+[Unique ID Schema] ClassID, GradeLevel,and GenderCodeù form a Primary 
+key, a unique ID.
 
 --
 
-[Dataset 3 Name] StaffAssign14
-[Dataset Description] This table contains the structure for the staff assignment 
-record. This file contains specific assignment data for all K-12 California 
-public education certificated teachers, administrators, and pupil services 
-personnel.
+[Dataset 3 Name] AssignmentCodes.csv
 
-
-
---
-[Dataset 4 Name] CourseEnrollment14
-[Dataset Description] The table contains the file structure for the Class Section 
-Enrollment record. A record is created for every class, class section, grade, 
-and gender category that has student enrolled on Information Day.
-
-[Experimental Unit Description] Schools within California 
-[Number of Observations]2981687                [Number of Features] 23
-[Data Source]http://www3.cde.ca.gov/download/dq/CourseEnroll14.zip
-[Data Dictionary]http://www.cde.ca.gov/ds/sd/df/fsclassectionenr12.asp
-[Unique ID Schema] ‚ÄúDistrictCode, Schoolcode, ClassID, CourseCode, 
-ClassCourseIDù are all form a Primary key, a unique ID.
-
---
-[Dataset 1 Name] ClassEnrollment14MF
-
-[Dataset Description] This dataset pertains to Class Enrollment records
-for 2014 forstudents by gender and ethnicity and by type of course and 
-specific class. A record is created for every class, gender and ethnicity 
-in a school that has students enrolled on Information Day and includes 
-unduplicated count of students in a class. From this dataset, which
-was too large to upload to Github, 2 smaller files were created in 
-Escel - one pertaining to class enrollment by 12th grade female students
-and one pertaining to class enrollment by 12th grade male students.
+[Dataset Description] This dataset contains information pertaining
+to staff assignment record. The original dataset contains specific 
+assignment categories for all teachers, administrators, and pupil 
+services personnel, such as counselors. The subset used for this
+file was of school employees specifically assigned as teachers of 
+academic classes. It matches unique course codes to course 
+descriptions.
 
 [Experimental Unit Description] Schools within California 
 
-[Number of Observations]1638659              [Number of Features] 23
+[Number of Observations]769             [Number of Features] 10
 
-[Data Source]http://www3.cde.ca.gov/download/dq/ClassEnrollment14.zip
+[Data Source]http://www3.cde.ca.gov/download/dq/AssignmentCodes12On.xls
 
-[Data Dictionary]http://www.cde.ca.gov/ds/sd/df/fsclassenroll.asp
+[Data Dictionary]http://www.cde.ca.gov/ds/sd/df/fsassignmentcode12on.asp
 
-[Unique ID Schema] ‚ÄúDistrictCode, Schoolcode, ClassID, Coursecode, 
-ClassCourseIDù are all form a Primary key, a unique ID.
+[Unique ID Schema] AssignmentCode is a Primary Key and unique ID.
+
+--
+[Dataset 4 Name] CoursesTaught14_NCLB.csv
+
+[Dataset Description] This dataset provides information about teachers
+assigned to specific courses and class sections. It has been edited
+to upload to Github by filtering for teachers that are NCLB-qualified
+(highly qualified by legislative mandate, the "No Child Left Behind"
+Act, that requires teachers meet given specifications in terms of 
+education and/or teaching experience).
+
+[Experimental Unit Description] Schools within California 
+
+[Number of Observations]36,749                [Number of Features] 18
+
+[Data Source]http://www3.cde.ca.gov/download/dq/CoursesTaught14.zip
+
+[Data Dictionary]http://www.cde.ca.gov/ds/sd/df/fsclassection12.asp
+
+[Unique ID Schema] ClassID is a Primary key, a unique ID.
 ;
 
 
@@ -108,9 +106,17 @@ https://github.com/stat6250/team-5_project2/blob/master/ClassEnrollment14F12.csv
 
 https://github.com/stat6250/team-5_project2/blob/master/ClassEnrollment14M12.csv?raw=true
 ;
+%let AssignmentCodes_Data_URL =
+
+https://github.com/stat6250/team-5_project2/blob/master/AssignmentCodes.csv?raw=true
+;
+%let CoursesTaught14_NCLB_Data_URL =
+
+https://github.com/stat6250/team-5_project2/blob/master/CoursesTaught14_NCLB.csv?raw=true
+;
 
 * load and import raw ClassEnrollment14F12 dataset (12th gr California female students in public s
-chools in 2014) over the wire;
+chools in 2014 and matches class data to student info) over the wire;
 
 filename tempfile TEMP;
 proc http
@@ -130,7 +136,7 @@ proc import
 run;
 
 * load and import raw ClassEnrollment14M12 dataset (12th gr California male students in public s
-chools in 2014) over the wire;
+chools in 2014 and matches class data to student info) over the wire;
 
 filename tempfile TEMP;
 proc http
@@ -148,6 +154,44 @@ proc import
 	getnames=yes;
  	guessingrows=100;
 run;
+
+* load and import raw AssignmentCodes dataset (matches course codes to course names) over the wire;
+
+filename tempfile TEMP;
+proc http
+    method="get"
+    url="&AssignmentCodes_Data_URL."
+    out=tempfile
+    ;
+run;
+proc import
+    out=AssignmentCodes_raw
+	datafile=tempfile
+    dbms=csv
+	replace;
+	delimiter=',';
+	getnames=yes;
+ 	guessingrows=100;
+run;
+
+* load and import raw CoursesTaught14_NCLB dataset (matches class id to course instructor info) over the wire;
+
+filename tempfile TEMP;
+proc http
+    method="get"
+    url="&CoursesTaught14_NCLB_Data_URL."
+    out=tempfile
+    ;
+run;
+proc import
+    out=CoursesTaught14_raw
+	datafile=tempfile
+    dbms=csv
+	replace;
+	delimiter=',';
+	getnames=yes;
+ 	guessingrows=100;
+run;
 * Print first 50 rows of each file;
 
 proc print data = ClassEnroll14F12_raw(firstobs= 1 obs= 50);
@@ -156,4 +200,12 @@ run;
 
 proc print data = ClassEnroll14M12_raw(firstobs= 1 obs= 50);
    title 'Class Enrollment of 12th grade Male Students';
+run;
+
+proc print data = AssignmentCodes_raw(firstobs= 1 obs= 50);
+   title 'Teacher Assignments and Course Codes/Course Names';
+run;
+
+proc print data = CoursesTaught14_raw(firstobs= 1 obs= 50);
+   title 'Class Data Cross-Referenced With Teacher Info';
 run;
