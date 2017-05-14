@@ -37,28 +37,31 @@
 
 * setup environmental parameters;
 
-%let ClassEnroll14F_Data_URL =
+%let ClassEnroll14F12_Data_URL =
 
-https://github.com/stat6250/team-5_project2/blob/master/ClassEnrollment14F.csv?raw=true
+https://github.com/stat6250/team-5_project2/blob/master/ClassEnrollment14F12.csv?raw=true
 ;
 
-* load raw Class Enrollment 2014 dataset (California female hs students in public s
+* load raw Class Enrollment 2014 dataset (12th gr California female hs students in public s
 chools in 2014) over the wire;
 
 filename tempfile TEMP;
 proc http
     method="get"
-    url="&ClassEnroll14F_Data_URL."
+    url="&ClassEnroll14F12_Data_URL."
     out=tempfile
     ;
 run;
 proc import
-    out=ClassEnroll14F_raw
+    out=ClassEnroll14F12_raw
 	datafile=tempfile
     dbms=csv
 	replace;
 	delimiter=',';
 	getnames=yes;
  	guessingrows=100;
+run;
+
+proc print data=ClassEnroll14F12_raw;
 run;
 
