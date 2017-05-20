@@ -24,7 +24,7 @@ that would make reading data problematic were deleted.
 
 [Data Dictionary]http://www.cde.ca.gov/ds/sd/df/fsclassenroll.asp
 
-[Unique ID Schema] ClassID, GradeLevel,and GenderCodeù form a Primary 
+[Unique ID Schema] ClassID, GradeLevel,and GenderCode¬ù form a Primary 
 key, a unique ID.
 
 --
@@ -49,7 +49,7 @@ that would make reading data problematic were deleted.
 
 [Data Dictionary]http://www.cde.ca.gov/ds/sd/df/fsclassenroll.asp
 
-[Unique ID Schema] ClassID, GradeLevel,and GenderCodeù form a Primary 
+[Unique ID Schema] ClassID, GradeLevel,and GenderCode¬ù form a Primary 
 key, a unique ID.
 
 --
@@ -100,19 +100,19 @@ education and/or teaching experience).
 
 %let ClassEnroll14F12_Data_URL =
 
-https://github.com/stat6250/team-5_project2/blob/master/ClassEnrollment14F12.csv?raw=true
+https://github.com/stat6250/team-5_project2/blob/master/data/ClassEnrollment14F12.csv?raw=true
 ;
 %let ClassEnroll14M12_Data_URL =
 
-https://github.com/stat6250/team-5_project2/blob/master/ClassEnrollment14M12.csv?raw=true
+https://github.com/stat6250/team-5_project2/blob/master/data/ClassEnrollment14M12.csv?raw=true
 ;
 %let AssignmentCodes_Data_URL =
 
-https://github.com/stat6250/team-5_project2/blob/master/AssignmentCodes.csv?raw=true
+https://github.com/stat6250/team-5_project2/blob/master/data/AssignmentCodes.csv?raw=true
 ;
 %let CoursesTaught14_NCLB_Data_URL =
 
-https://github.com/stat6250/team-5_project2/blob/master/CoursesTaught14_NCLB.csv?raw=true
+https://github.com/stat6250/team-5_project2/blob/master/data/CoursesTaught14_NCLB.csv?raw=true
 ;
 
 * load and import raw ClassEnrollment14F12 dataset (12th gr California female students in public s
