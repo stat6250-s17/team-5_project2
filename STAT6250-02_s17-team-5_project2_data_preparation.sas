@@ -134,6 +134,36 @@ proc import
 	getnames=yes;
  	guessingrows=100;
 run;
+data ClassEnroll14F12;
+    set ClassEnroll14F12_raw;
+	drop
+	    FileCreated
+	;
+    retain
+	    AcademicYear
+		DistrictCode
+		SchoolCode
+		CountyName
+		DistrictName
+		SchoolName
+		ClassID
+		CourseCode
+		GradeLevel
+		GenderCode
+		EnrollNoEthRptd
+		EnrollAmInd
+		EnrollAsian
+		EnrollPacIsl
+		EnrollFilipino
+		EnrollHispanic
+		EnrollAfrAm
+		EnrollWhite
+		EnrollTwoorMore
+		EnrollTotal
+		EnrollEL
+    ;
+run;
+
 
 * load and import raw ClassEnrollment14M12 dataset (12th gr California male students in public s
 chools in 2014 and matches class data to student info) over the wire;
@@ -154,7 +184,35 @@ proc import
 	getnames=yes;
  	guessingrows=100;
 run;
-
+data ClassEnroll14M12;
+    set ClassEnroll14M12_raw;
+	drop
+	    FileCreated
+	;
+    retain
+	    AcademicYear
+		DistrictCode
+		SchoolCode
+		CountyName
+		DistrictName
+		SchoolName
+		ClassID
+		CourseCode
+		GradeLevel
+		GenderCode
+		EnrollNoEthRptd
+		EnrollAmInd
+		EnrollAsian
+		EnrollPacIsl
+		EnrollFilipino
+		EnrollHispanic
+		EnrollAfrAm
+		EnrollWhite
+		EnrollTwoorMore
+		EnrollTotal
+		EnrollEL
+    ;
+run;
 * load and import raw AssignmentCodes dataset (matches course codes to course names) over the wire;
 
 filename tempfile TEMP;
@@ -172,6 +230,23 @@ proc import
 	delimiter=',';
 	getnames=yes;
  	guessingrows=100;
+run;
+data AssignmentCodes;
+    set AssignmentCodes_raw;
+	drop
+	    EffectiveStartDate
+		EffectiveEndDate
+	;
+	retain
+	    AssignmentCode
+		AssignmentName
+		AssignmentType
+		AssignmentSubject
+		AP_Course
+		IB_Course
+		CTE_Course
+		MeetsUC_CSU_Requirements
+	;
 run;
 
 * load and import raw CoursesTaught14_NCLB dataset (matches class id to course instructor info) over the wire;
@@ -192,20 +267,46 @@ proc import
 	getnames=yes;
  	guessingrows=100;
 run;
+data CoursesTaught14;
+    set CoursesTaught14_raw;
+	drop
+	    MultipleTeacherCode
+		CTE_FundingProvider
+		SEID_Indicator
+	;
+	retain
+	    AcademicYear
+		DistrictCode
+		schoolCode
+		CountyName
+		DistrictName
+		SchoolName
+		ClassID
+		CourseCode
+		ClassCourseID
+		UC_CSU_Approved
+		NCLB_Core
+		NCLB_HQT
+		DistanceLearning
+		IndependentStudy
+		Enrollment
+	;
+run;
+
 * Print first 50 rows of each file;
 
-proc print data = ClassEnroll14F12_raw(firstobs= 1 obs= 50);
+proc print data = ClassEnroll14F12(firstobs= 1 obs= 50);
    title 'Class Enrollment of 12th grade Female Students';
 run;
 
-proc print data = ClassEnroll14M12_raw(firstobs= 1 obs= 50);
+proc print data = ClassEnroll14M12(firstobs= 1 obs= 50);
    title 'Class Enrollment of 12th grade Male Students';
 run;
 
-proc print data = AssignmentCodes_raw(firstobs= 1 obs= 50);
+proc print data = AssignmentCodes(firstobs= 1 obs= 50);
    title 'Teacher Assignments and Course Codes/Course Names';
 run;
 
-proc print data = CoursesTaught14_raw(firstobs= 1 obs= 50);
+proc print data = CoursesTaught14(firstobs= 1 obs= 50);
    title 'Class Data Cross-Referenced With Teacher Info';
 run;
