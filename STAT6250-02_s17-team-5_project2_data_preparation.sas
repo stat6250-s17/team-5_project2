@@ -102,21 +102,141 @@ education and/or teaching experience).
 
 https://github.com/stat6250/team-5_project2/blob/master/data/ClassEnrollment14F12.csv?raw=true
 ;
+%let inputDataset1Type = CSV;
+%let inputDataset1DSN = ClassEnroll14F12;
+
 %let ClassEnroll14M12_Data_URL =
 
 https://github.com/stat6250/team-5_project2/blob/master/data/ClassEnrollment14M12.csv?raw=true
 ;
+%let inputDataset1Type = CSV;
+%let inputDataset1DSN = ClassEnroll14M12;
+
 %let AssignmentCodes_Data_URL =
 
 https://github.com/stat6250/team-5_project2/blob/master/data/AssignmentCodes.csv?raw=true
 ;
+%let inputDataset1Type = CSV;
+%let inputDataset1DSN = AssignmentCodes;
+
 %let CoursesTaught14_NCLB_Data_URL =
 
 https://github.com/stat6250/team-5_project2/blob/master/data/CoursesTaught14_NCLB.csv?raw=true
 ;
+%let inputDataset1Type = CSV;
+%let inputDataset1DSN = CoursesTaught14_NCLB;
+
+
+* load raw datasets over the wire, if they doesn't already exist;
+%macro loadDataIfNotAlreadyAvailable(dsn,url,filetype);
+    %put &=dsn;
+    %put &=url;
+    %put &=filetype;
+    %if
+        %sysfunc(exist(&dsn.)) = 0
+    %then
+        %do;
+            %put Loading dataset &dsn. over the wire now...;
+            filename tempfile "%sysfunc(getoption(work))/tempfile.xlsx";
+            proc http
+                method="get"
+                url="&url."
+                out=tempfile
+                ;
+            run;
+            proc import
+                file=tempfile
+                out=&dsn.
+                dbms=&filetype.;
+            run;
+            filename tempfile clear;
+        %end;
+    %else
+        %do;
+            %put Dataset &dsn. already exists. Please delete and try again.;
+        %end;
+%mend;
+
+
+%loadDataIfNotAlreadyAvailable(
+    &inputDataset1DSN.,
+    &inputDataset1URL.,
+    &inputDataset1Type.
+)
+%loadDataIfNotAlreadyAvailable(
+    &inputDataset2DSN.,
+    &inputDataset2URL.,
+    &inputDataset2Type.
+)
+%loadDataIfNotAlreadyAvailable(
+    &inputDataset3DSN.,
+    &inputDataset3URL.,
+    &inputDataset3Type.
+)
+%loadDataIfNotAlreadyAvailable(
+    &inputDataset4DSN.,
+    &inputDataset4URL.,
+    &inputDataset4Type.
+)
+
+
+* sort and check raw datasets for duplicates with respect to their unique ids,
+  removing blank rows, if needed;
+proc sort
+        nodupkey
+        data=AssignmentCodes
+        dupout=AssignmentCodes_dups
+        out=AssignmentCodes_sorted
+    ;
+    by
+        County_Code
+        District_Code
+        School_Code
+    ;
+run;
+proc sort
+        nodupkey
+        data=ClassEnrollment14F12
+        dupout=ClassEnrollment14F12_dups
+        out=ClassEnrollment14F12_sorted
+    ;
+    by
+        County_Code
+        District_Code
+        School_Code
+    ;
+run;
+proc sort
+        nodupkey
+        data=ClassEnroll14M12
+        dupout=ClassEnroll14M12_dups
+        out=ClassEnroll14M12_sorted
+    ;
+    by
+        County_Code
+        District_Code
+        School_Code
+    ;
+run;
+proc sort
+        nodupkey
+        data=CoursesTaught14_NCLB
+        dupout=CoursesTaught14_NCLB_dups
+        out=CoursesTaught14_NCLB_sorted
+    ;
+    by
+        County_Code
+        District_Code
+        School_Code
+    ;
+run;
+
+
+
 
 * load and import raw ClassEnrollment14F12 dataset (12th gr California female students in public s
 chools in 2014 and matches class data to student info) over the wire;
+
 
 filename tempfile TEMP;
 proc http
