@@ -24,7 +24,7 @@ that would make reading data problematic were deleted.
 
 [Data Dictionary]http://www.cde.ca.gov/ds/sd/df/fsclassenroll.asp
 
-[Unique ID Schema] ClassID, GradeLevel,and GenderCode form a Primary 
+[Unique ID Schema] DistrictCode, SchoolCode, ClassID, and CourseCode� form a Primary 
 key, a unique ID.
 
 --
@@ -49,7 +49,7 @@ that would make reading data problematic were deleted.
 
 [Data Dictionary]http://www.cde.ca.gov/ds/sd/df/fsclassenroll.asp
 
-[Unique ID Schema] ClassID, GradeLevel,and GenderCode form a Primary 
+[Unique ID Schema] DistrictCode, SchoolCode, ClassID, and CourseCode form a Primary 
 key, a unique ID.
 
 --
@@ -98,65 +98,62 @@ education and/or teaching experience).
 
 * setup environmental parameters;
 
-%let ClassEnroll14F12_Data_URL =
+%let inputDataset1URL =
 
 https://github.com/stat6250/team-5_project2/blob/master/data/ClassEnrollment14F12.csv?raw=true
 ;
 %let inputDataset1Type = CSV;
 %let inputDataset1DSN = ClassEnroll14F12;
 
-%let ClassEnroll14M12_Data_URL =
+%let inputDataset2URL =
 
 https://github.com/stat6250/team-5_project2/blob/master/data/ClassEnrollment14M12.csv?raw=true
 ;
-%let inputDataset1Type = CSV;
-%let inputDataset1DSN = ClassEnroll14M12;
+%let inputDataset2Type = CSV;
+%let inputDataset2DSN = ClassEnroll14M12;
 
-%let AssignmentCodes_Data_URL =
+%let inputDataset3URL =
 
 https://github.com/stat6250/team-5_project2/blob/master/data/AssignmentCodes.csv?raw=true
 ;
-%let inputDataset1Type = CSV;
-%let inputDataset1DSN = AssignmentCodes;
+%let inputDataset3Type = CSV;
+%let inputDataset3DSN = AssignmentCodes;
 
-%let CoursesTaught14_NCLB_Data_URL =
+%let inputDataset4URL =
 
 https://github.com/stat6250/team-5_project2/blob/master/data/CoursesTaught14_NCLB.csv?raw=true
 ;
-%let inputDataset1Type = CSV;
-%let inputDataset1DSN = CoursesTaught14_NCLB;
+%let inputDataset4Type = CSV;
+%let inputDataset4DSN = CoursesTaught14_NCLB;
 
 
-* load raw datasets over the wire, if they doesn't already exist;
+* load raw datasets over the wire;
 %macro loadDataIfNotAlreadyAvailable(dsn,url,filetype);
     %put &=dsn;
     %put &=url;
     %put &=filetype;
-    %if
-        %sysfunc(exist(&dsn.)) = 0
-    %then
+
         %do;
             %put Loading dataset &dsn. over the wire now...;
-            filename tempfile "%sysfunc(getoption(work))/tempfile.xlsx";
+            filename tempfile "%sysfunc(getoption(work))/tempfile";
             proc http
                 method="get"
                 url="&url."
                 out=tempfile
                 ;
             run;
-            proc import
+            proc import out=&dsn.
                 file=tempfile
-                out=&dsn.
-                dbms=&filetype.;
+                dbms=&filetype. replace;
+				getnames=yes;
+ 				guessingrows=100;
             run;
+
             filename tempfile clear;
         %end;
-    %else
-        %do;
-            %put Dataset &dsn. already exists. Please delete and try again.;
-        %end;
-%mend;
 
+%mend;
+options spool;
 
 %loadDataIfNotAlreadyAvailable(
     &inputDataset1DSN.,
@@ -182,29 +179,18 @@ https://github.com/stat6250/team-5_project2/blob/master/data/CoursesTaught14_NCL
 
 * sort and check raw datasets for duplicates with respect to their unique ids,
   removing blank rows, if needed;
+
 proc sort
         nodupkey
-        data=AssignmentCodes
-        dupout=AssignmentCodes_dups
-        out=AssignmentCodes_sorted
+        data=ClassEnroll14F12
+        dupout=ClassEnroll14F12_dups
+        out=ClassEnroll14F12_sorted
     ;
     by
-        County_Code
-        District_Code
-        School_Code
-    ;
-run;
-proc sort
-        nodupkey
-        data=ClassEnrollment14F12
-        dupout=ClassEnrollment14F12_dups
-        out=ClassEnrollment14F12_sorted
-    ;
-    by
-        County_Code
-        District_Code
-        School_Code
-    ;
+		DistrictCode
+		SchoolCode
+		ClassID
+		CourseCode;
 run;
 proc sort
         nodupkey
@@ -212,11 +198,20 @@ proc sort
         dupout=ClassEnroll14M12_dups
         out=ClassEnroll14M12_sorted
     ;
-    by
-        County_Code
-        District_Code
-        School_Code
+    by	
+		DistrictCode
+		SchoolCode
+		ClassID
+		CourseCode;
+run;
+proc sort
+        nodupkey
+        data=AssignmentCodes
+        dupout=AssignmentCodes_dups
+        out=AssignmentCodes_sorted
     ;
+    by
+		AssignmentCode;
 run;
 proc sort
         nodupkey
@@ -225,37 +220,11 @@ proc sort
         out=CoursesTaught14_NCLB_sorted
     ;
     by
-        County_Code
-        District_Code
-        School_Code
-    ;
+        ClassID;
 run;
 
-
-
-
-* load and import raw ClassEnrollment14F12 dataset (12th gr California female students in public s
-chools in 2014 and matches class data to student info) over the wire;
-
-
-filename tempfile TEMP;
-proc http
-    method="get"
-    url="&ClassEnroll14F12_Data_URL."
-    out=tempfile
-    ;
-run;
-proc import
-    out=ClassEnroll14F12_raw
-	datafile=tempfile
-    dbms=csv
-	replace;
-	delimiter=',';
-	getnames=yes;
- 	guessingrows=100;
-run;
-data ClassEnroll14F12;
-    set ClassEnroll14F12_raw;
+data ClassEnroll14F12_raw;
+    set ClassEnroll14F12_sorted;
 	drop
 	    FileCreated
 	;
@@ -284,28 +253,8 @@ data ClassEnroll14F12;
     ;
 run;
 
-
-* load and import raw ClassEnrollment14M12 dataset (12th gr California male students in public s
-chools in 2014 and matches class data to student info) over the wire;
-
-filename tempfile TEMP;
-proc http
-    method="get"
-    url="&ClassEnroll14M12_Data_URL."
-    out=tempfile
-    ;
-run;
-proc import
-    out=ClassEnroll14M12_raw
-	datafile=tempfile
-    dbms=csv
-	replace;
-	delimiter=',';
-	getnames=yes;
- 	guessingrows=100;
-run;
-data ClassEnroll14M12;
-    set ClassEnroll14M12_raw;
+data ClassEnroll14M12_raw;
+    set ClassEnroll14M12_sorted;
 	drop
 	    FileCreated
 	;
@@ -333,26 +282,9 @@ data ClassEnroll14M12;
 		EnrollEL
     ;
 run;
-* load and import raw AssignmentCodes dataset (matches course codes to course names) over the wire;
 
-filename tempfile TEMP;
-proc http
-    method="get"
-    url="&AssignmentCodes_Data_URL."
-    out=tempfile
-    ;
-run;
-proc import
-    out=AssignmentCodes_raw
-	datafile=tempfile
-    dbms=csv
-	replace;
-	delimiter=',';
-	getnames=yes;
- 	guessingrows=100;
-run;
-data AssignmentCodes;
-    set AssignmentCodes_raw;
+data AssignmentCodes_raw;
+    set AssignmentCodes_sorted;
 	drop
 	    EffectiveStartDate
 		EffectiveEndDate
@@ -369,26 +301,8 @@ data AssignmentCodes;
 	;
 run;
 
-* load and import raw CoursesTaught14_NCLB dataset (matches class id to course instructor info) over the wire;
-
-filename tempfile TEMP;
-proc http
-    method="get"
-    url="&CoursesTaught14_NCLB_Data_URL."
-    out=tempfile
-    ;
-run;
-proc import
-    out=CoursesTaught14_raw
-	datafile=tempfile
-    dbms=csv
-	replace;
-	delimiter=',';
-	getnames=yes;
- 	guessingrows=100;
-run;
-data CoursesTaught14;
-    set CoursesTaught14_raw;
+data CoursesTaught14_NCLB_raw;
+    set CoursesTaught14_NCLB_sorted;
 	drop
 	    MultipleTeacherCode
 		CTE_FundingProvider
@@ -415,18 +329,18 @@ run;
 
 * Print first 50 rows of each file;
 
-proc print data = ClassEnroll14F12(firstobs= 1 obs= 50);
+proc print data = ClassEnroll14F12_raw(firstobs= 1 obs= 50);
    title 'Class Enrollment of 12th grade Female Students';
 run;
 
-proc print data = ClassEnroll14M12(firstobs= 1 obs= 50);
+proc print data = ClassEnroll14M12_raw(firstobs= 1 obs= 50);
    title 'Class Enrollment of 12th grade Male Students';
 run;
 
-proc print data = AssignmentCodes(firstobs= 1 obs= 50);
+proc print data = AssignmentCodes_raw(firstobs= 1 obs= 50);
    title 'Teacher Assignments and Course Codes/Course Names';
 run;
 
-proc print data = CoursesTaught14(firstobs= 1 obs= 50);
+proc print data = CoursesTaught14_NCLB_raw(firstobs= 1 obs= 50);
    title 'Class Data Cross-Referenced With Teacher Info';
 run;
