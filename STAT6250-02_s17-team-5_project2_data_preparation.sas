@@ -327,20 +327,30 @@ data CoursesTaught14_NCLB_raw;
 	;
 run;
 
-* Print first 50 rows of each file;
+* Concatenate male and female student enrollment files;
 
-proc print data = ClassEnroll14F12_raw(firstobs= 1 obs= 50);
-   title 'Class Enrollment of 12th grade Female Students';
+ data all_student_enrollment;
+	set ClassEnroll14F12_raw ClassEnroll14M12_raw;
+ run;
+ 
+proc sort data=Assignmentcodes_raw;
+	by AssignmentCode;
 run;
 
-proc print data = ClassEnroll14M12_raw(firstobs= 1 obs= 50);
-   title 'Class Enrollment of 12th grade Male Students';
+proc sort data=Coursestaught14_nclb_raw;
+	by CourseCode;
 run;
 
-proc print data = AssignmentCodes_raw(firstobs= 1 obs= 50);
-   title 'Teacher Assignments and Course Codes/Course Names';
+data Course_Teacher_Info;
+	merge AssignmentCodes_raw(rename=(AssignmentCode=CourseCode)) Coursestaught14_nclb_raw;
+	by CourseCode;
 run;
 
-proc print data = CoursesTaught14_NCLB_raw(firstobs= 1 obs= 50);
-   title 'Class Data Cross-Referenced With Teacher Info';
-run;
+
+		  
+
+
+
+
+
+
