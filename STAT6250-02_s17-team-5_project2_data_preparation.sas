@@ -24,7 +24,7 @@ that would make reading data problematic were deleted.
 
 [Data Dictionary]http://www.cde.ca.gov/ds/sd/df/fsclassenroll.asp
 
-[Unique ID Schema] DistrictCode, SchoolCode, ClassID, and CourseCodeù form a Primary 
+[Unique ID Schema] DistrictCode, SchoolCode, ClassID, and CourseCode¬ù form a Primary 
 key, a unique ID.
 
 --
@@ -222,6 +222,9 @@ proc sort
     by
         ClassID;
 run;
+
+* build analytic dataset from raw datasets to address research questions in
+corresponding data-analysis files;
 
 data ClassEnroll14F12_raw;
     set ClassEnroll14F12_sorted;
