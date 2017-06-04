@@ -346,6 +346,48 @@ data Course_Teacher_Info;
 	by CourseCode;
 run;
 
+data ap_math_students;
+	merge all_student_enrollment Course_Teacher_Info;
+		if AssignmentSubject='Mathematics';
+			if AP_Course='Y';
+run;
+
+data ap_math_students_by_ethnicity;
+	set ap_math_students;
+	var 
+		EnrollAmInd
+		EnrollAsian
+		EnrollPacIsl
+		EnrollFilipino
+		EnrollHispanic
+		EnrollAfrAm
+		EnrollWhite
+		EnrollTwoorMore
+		EnrollTotal;
+
+	by 
+		EnrollAmInd
+		EnrollAsian
+		EnrollPacIsl
+		EnrollFilipino
+		EnrollHispanic
+		EnrollAfrAm
+		EnrollWhite
+		EnrollTwoorMore
+		EnrollTotal;
+
+		sum=EnrollAmInd;
+		sum=EnrollAsian;
+		sum=EnrollPacIsl;
+		sum=EnrollFilipino;
+		sum=EnrollHispanic;
+		sum=EnrollAfrAm;
+		sum=EnrollWhite;		
+		sum=EnrollTwoorMore;
+		sum=EnrollTotal;
+
+	run;
+
 
 		  
 
