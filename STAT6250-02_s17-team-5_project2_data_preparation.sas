@@ -367,25 +367,23 @@ data ap_math_students_by_ethnicity;
 
 	by 
 		EnrollAmInd
+			sum=EnrollAmInd
 		EnrollAsian
+			sum=EnrollAsian
 		EnrollPacIsl
+			sum=EnrollPacIsl
 		EnrollFilipino
+			sum=EnrollFilipino
 		EnrollHispanic
+			sum=EnrollHispanic
 		EnrollAfrAm
+			sum=EnrollAfrAm
 		EnrollWhite
+			sum=EnrollWhite
 		EnrollTwoorMore
-		EnrollTotal;
-
-		sum=EnrollAmInd;
-		sum=EnrollAsian;
-		sum=EnrollPacIsl;
-		sum=EnrollFilipino;
-		sum=EnrollHispanic;
-		sum=EnrollAfrAm;
-		sum=EnrollWhite;		
-		sum=EnrollTwoorMore;
-		sum=EnrollTotal;
-
+			sum=EnrollTwoorMore
+		EnrollTotal
+			sum=EnrollTotal;
 	run;
 
 
