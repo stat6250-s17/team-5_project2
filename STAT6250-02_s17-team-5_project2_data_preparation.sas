@@ -24,7 +24,7 @@ that would make reading data problematic were deleted.
 
 [Data Dictionary]http://www.cde.ca.gov/ds/sd/df/fsclassenroll.asp
 
-[Unique ID Schema] DistrictCode, SchoolCode, ClassID, and CourseCode¬ù form a Primary 
+[Unique ID Schema] DistrictCode, SchoolCode, ClassID, and CourseCodeù form a Primary 
 key, a unique ID.
 
 --
@@ -223,9 +223,6 @@ proc sort
         ClassID;
 run;
 
-* build analytic dataset from raw datasets to address research questions in
-corresponding data-analysis files;
-
 data ClassEnroll14F12_raw;
     set ClassEnroll14F12_sorted;
 	drop
@@ -348,9 +345,122 @@ data Course_Teacher_Info;
 	merge AssignmentCodes_raw(rename=(AssignmentCode=CourseCode)) Coursestaught14_nclb_raw;
 	by CourseCode;
 run;
+proc sort data=all_student_enrollment;
+	by CourseCode;
+run;
+data ap_math_students;
+	merge all_student_enrollment Course_Teacher_Info;
+	by CourseCode;
+		if AssignmentSubject='Mathematics';
+			if AP_Course='Y';
+run;
 
+data ap_math_summary_by_ethnicity
+	(keep=
+	American_Indian
+	Asian
+	Pacific_Islander
+	Filipino
+	Hispanic
+	African_American
+	White
+	Two_or_More);
 
+	set ap_math_students end=last;
 
+	format 
+	American_Indian
+	Asian
+	Pacific_Islander
+	Filipino
+	Hispanic
+	African_American
+	White
+	Two_or_More percent8.2;
+	
+	EnrollAmInd_Sum+EnrollAmInd;
+	EnrollAsian_Sum+EnrollAsian;
+	EnrollPacIsl_Sum+EnrollPacIsl;
+	EnrollFilipino_Sum+EnrollFilipino;
+	EnrollHispanic_Sum+EnrollHispanic;
+	EnrollAfrAm_Sum+EnrollAfrAm;
+	EnrollWhite_Sum+EnrollWhite;
+	EnrollTwoorMore_Sum+EnrollTwoorMore;
+	EnrollTotal_Sum+EnrollTotal;
 
+	American_Indian=EnrollAmInd_Sum/EnrollTotal_Sum;
+	Asian=EnrollAsian_Sum/EnrollTotal_Sum;
+	Pacific_Islander=EnrollPacIsl_Sum/EnrollTotal_Sum;
+	Filipino=EnrollFilipino_Sum/EnrollTotal_Sum;
+	Hispanic=EnrollHispanic_Sum/EnrollTotal_Sum;
+	African_American=EnrollAfrAm_Sum/EnrollTotal_Sum;
+	White=EnrollWhite_Sum/EnrollTotal_Sum;
+	Two_or_More=EnrollTwoorMore_Sum/EnrollTotal_Sum;
 
+	if last;
 
+	run;
+
+data ap_math_students_by_gender
+
+	(keep=
+		Female_Enrollment
+		Male_Enrollment);
+
+	set ap_math_students end=last;
+
+	format 
+	Female_Enrollment
+	Male_Enrollment percent8.2;
+	
+
+	if GenderCode='F' then
+		EnrollFemale_Sum+EnrollTotal;
+	else if GenderCode='M' then
+		EnrollMale_Sum+EnrollTotal;
+
+	EnrollTotal_Sum+EnrollTotal;
+
+	Female_Enrollment=EnrollFemale_Sum/EnrollTotal_Sum;
+	Male_Enrollment=EnrollMale_Sum/EnrollTotal_Sum;
+
+	if last;
+
+	run;
+
+proc sort data=ap_math_students;
+	by SchoolCode;
+run;
+
+data ap_math_students_by_school
+
+	(keep=
+	DistrictName
+	SchoolName
+	AP_Enrollment);
+
+	set ap_math_students end=last;
+
+	array AP_Enrollment{};
+
+	format
+	AP_Enrollment percent8.2;
+
+	EnrollTotal_Sum=0;
+	EnrollTotal_Sum=EnrollTotal_Sum+Enrollment;
+		
+	by SchoolCode;
+		do
+			SchoolEnrollment_Sum=SchoolEnrollment_Sum+Enrollment;
+			AP_Enrollment=SchoolEnrollment_Sum/Enrollment_Sum;
+		end;
+
+	SchoolEnrollment_Sum=0;
+
+	if last;
+
+	run;
+
+proc sort data=ap_math_students_by_school;
+	by 	descending AP_Enrollment;
+run;
