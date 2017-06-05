@@ -24,7 +24,7 @@ that would make reading data problematic were deleted.
 
 [Data Dictionary]http://www.cde.ca.gov/ds/sd/df/fsclassenroll.asp
 
-[Unique ID Schema] DistrictCode, SchoolCode, ClassID, and CourseCodeù form a Primary 
+[Unique ID Schema] DistrictCode, SchoolCode, ClassID, and CourseCodeÔøΩ form a Primary 
 key, a unique ID.
 
 --
@@ -440,8 +440,6 @@ data ap_math_students_by_school
 	AP_Enrollment);
 
 	set ap_math_students end=last;
-
-	array AP_Enrollment{};
 
 	format
 	AP_Enrollment percent8.2;
