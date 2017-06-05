@@ -112,20 +112,54 @@ ClassEnroll14M12_raw, AssignmentCodes_raw, CoursesTaught14_raw ;
 *******************************************************************************;
 *
 
-[Research Question 1] What is the greatest percentage participation by ethnicity
-of students in AP math classes ranked in descending order?
+[Research Question 1] What is the ethnic breakdown of students in AP math classes?
 (Rationale: This determines whether minority students are often excluded from 
-advanced math classes) 
+advanced math classes);
+	
 
-[Research Question 2] What is the percentage participation of male v. female
+proc print data=ap_math_summary_by_ethnicity noobs;
+	var
+	American_Indian
+	Asian
+	Pacific_Islander
+	Filipino
+	Hispanic
+	African_American
+	White
+	Two_or_More;
+
+	title "Ethnic Makeup of Students in AP Math Classes";
+
+run;
+
+*[Research Question 2] What is the percentage participation of male v. female
 students in AP math classes? 
 (Rationale: This determines whether there is gender parity in access to and
-participation in advanced math classes.) 
+participation in advanced math classes.);
 
-[Research Question 3] Which schools ranked in descending order have the
+proc print data=ap_math_students_by_gender noobs;
+	var
+	Female_Enrollment
+	Male_Enrollment;
+
+	title "Gender Makeup of Students in AP Math Classes";
+
+run;
+
+*[Research Question 3] Which schools ranked in descending order have the
 greatest percentages of students in AP math classes?
 (Rationale: This would determine possible socio-economic factors by location.) 
 
-[Reason for Choice] There are many issues involving ethnicity and socio-
+[Reason for Choice] There are many assumptions involving ethnicity and socio-
 economic access to higher-level coursework in mathematics.
-*
+;
+
+proc print data=ap_math_students_by_school;
+	var
+	DistrictName
+	SchoolName
+	AP_Enrollment;
+
+	title "Proportion of Students in AP Math Classes by School";
+
+run;
