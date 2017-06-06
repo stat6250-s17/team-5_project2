@@ -126,7 +126,7 @@ proc print data=ap_math_summary_by_ethnicity noobs;
 	White
 	Two_or_More;
 run;
-title clear;
+title;
 
 
 *[Research Question 2] What is the percentage participation of male v. female
@@ -143,34 +143,26 @@ proc print data=ap_math_students_by_gender noobs;
 	
 
 run;
-title clear;
+title;
 
 
-*[Research Question 3] What is the AP Math Enrollment by District in Alameda County and which
-schools in Alameda County have AP math enrollment greater than 1 s.d. above the mean?
-(Rationale: This would determine possible socio-economic factors by location.) 
+*[Research Question 3] What are the top 10 districts and top 10 schools in terms of students enrolled
+in AP math classes?
 
-[Reason for Choice] There are many assumptions involving ethnicity and socio-
-economic access to higher-level coursework in mathematics.
+(Rationale: This would determine access to high-quality math education socio-economic factors by district
+and school.) 
+
+[Reason for Choice]To explore access to access and opportunity in higher math education.
 ;
 
-proc freq data=ap_math_students_by_ds;
-	where CountyName='ALAMEDA';
-	tables DistrictName*Enrollment/out=DistrictEnrollment;
-	format Enrollment Enrollmentfmt.;
-run;
-proc freq data=ap_math_students_by_ds;
-	where Enrollment>58 and CountyName='ALAMEDA';
-	tables SchoolName*Enrollment/out=high_SchoolEnrollment;
-	format Enrollment Enrollmentfmt.;
-run;
 
-title "AP Math Enrollment by District in Alameda County";
-proc print data=DistrictEnrollment;
-run;
-title clear;
 
-title "Highest AP Math Enrollment by School in Alameda County";
-proc print data=high_SchoolEnrollment;
+title "AP Math Enrollment by District";
+proc print data=DistrictAPTotals;
 run;
-title clear;
+title;
+
+title "AP Math Enrollment by School";
+proc print data=SchoolAPTotals;
+run;
+title;

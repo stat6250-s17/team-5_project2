@@ -438,7 +438,7 @@ data ap_math_summary_by_ethnicity
 
 	run;
 
-data ap_math_students_by_gender noobs;
+data ap_math_students_by_gender noobs
 
 	(keep=
 		Female_Enrollment
@@ -470,18 +470,39 @@ data ap_math_students_by_gender noobs;
 	if last;
 
 	run;
-proc sort data=ap_math_students out=ap_math_students_by_ds;
-	by DistrictCode SchoolCode;
+proc sort data=ap_math_students out=ap_math_students_by_district;
+	by DistrictName;
 run;
-proc means data=ap_math_students_by_ds;
-	var Enrollment;
+proc means noprint data=ap_math_students_by_district;
+    var EnrollTotal;
+    by DistrictName;
+    output out=summary_by_district sum(EnrollTotal)=DistrictAPEnrollment;
 run;
-proc format;
-	value Enrollmentfmt	low-5='<2 sd'
-						6-23='1<sd<2 below'
-						24-41='sd<=1 below'
-						42-58='sd<=1 above'
-						59-high='>1 sd above';
+proc sort data=summary_by_district out=ap_summary_by_district;
+	by descending DistrictAPEnrollment;
+run;
+proc freq data=ap_summary_by_district noprint;
+	by descending DistrictAPEnrollment;
+	tables DistrictName*DistrictAPEnrollment / out=DistrictAPTotals;
+	data DistrictAPTotals;
+	set DistrictAPTotals(obs=10);
+run;
+proc sort data=ap_math_students out=ap_math_students_by_school;
+	by SchoolName;
+run;
+proc means noprint data=ap_math_students_by_school;
+    var EnrollTotal;
+    by SchoolName;
+    output out=summary_by_school sum(EnrollTotal)=SchoolAPEnrollment;
+run;
+proc sort data=summary_by_school out=ap_summary_by_school;
+	by descending SchoolAPEnrollment;
+run;
+proc freq data=ap_summary_by_school noprint;
+	by descending SchoolAPEnrollment;
+	tables SchoolName*SchoolAPEnrollment / out=SchoolAPTotals;
+	data SchoolAPTotals;
+	set SchoolAPTotals(obs=10);
 run;
 
 
