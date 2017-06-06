@@ -98,14 +98,12 @@ education and/or teaching experience).
 * environmental setup;
 
 * set relative file import path to current directory (using standard SAS trick);
-X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))
--%length(%sysget(SAS_EXECFILENAME))))""";
+X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";
 
 
-* load external file that generates analytic dataset ClassEnroll14F12_raw,
-ClassEnroll14M12_raw, AssignmentCodes_raw, CoursesTaught14_raw ;
-%include '.\STAT6250-02_s17-team-5_project2_data_preparation.sas';
-
+* load external file that generates analytic datasets ClassEnrollment14F12.csv,
+  ClassEnrollment14M12.csv, and CoursesTaught14_NCLB.csv;
+%include ".\STAT6250-02_s17-team-5_project2_data_preparation.sas";
 
 *******************************************************************************;
 * Research Question Analysis Starting Point;
@@ -116,7 +114,7 @@ ClassEnroll14M12_raw, AssignmentCodes_raw, CoursesTaught14_raw ;
 (Rationale: This determines whether minority students are often excluded from 
 advanced math classes);
 	
-
+title "Ethnic Makeup of Students in AP Math Classes";
 proc print data=ap_math_summary_by_ethnicity noobs;
 	var
 	American_Indian
@@ -127,39 +125,44 @@ proc print data=ap_math_summary_by_ethnicity noobs;
 	African_American
 	White
 	Two_or_More;
-
-	title "Ethnic Makeup of Students in AP Math Classes";
-
 run;
+title;
+
 
 *[Research Question 2] What is the percentage participation of male v. female
 students in AP math classes? 
 (Rationale: This determines whether there is gender parity in access to and
 participation in advanced math classes.);
 
+title "Gender Makeup of Students in AP Math Classes";
 proc print data=ap_math_students_by_gender noobs;
 	var
 	Female_Enrollment
 	Male_Enrollment;
 
-	title "Gender Makeup of Students in AP Math Classes";
+	
 
 run;
+title;
 
-*[Research Question 3] Which schools ranked in descending order have the
-greatest percentages of students in AP math classes?
-(Rationale: This would determine possible socio-economic factors by location.) 
 
-[Reason for Choice] There are many assumptions involving ethnicity and socio-
-economic access to higher-level coursework in mathematics.
+*[Research Question 3] What are the top 10 districts and top 10 schools in terms of students enrolled
+in AP math classes?
+
+(Rationale: This would determine access to high-quality math education socio-economic factors by district
+and school.) 
+
+[Reason for Choice]To explore access to access and opportunity in higher math education.
 ;
 
-proc print data=ap_math_students_by_school;
-	var
-	DistrictName
-	SchoolName
-	AP_Enrollment;
 
-	title "Proportion of Students in AP Math Classes by School";
 
+title "AP Math Enrollment by District";
+proc print data=DistrictAPTotals;
 run;
+title;
+
+title "AP Math Enrollment by School";
+proc print data=SchoolAPTotals;
+run;
+title;

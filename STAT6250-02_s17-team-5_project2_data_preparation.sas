@@ -146,7 +146,7 @@ https://github.com/stat6250/team-5_project2/blob/master/data/CoursesTaught14_NCL
                 file=tempfile
                 dbms=&filetype. replace;
 				getnames=yes;
- 				guessingrows=100;
+ 				guessingrows=1000;
             run;
 
             filename tempfile clear;
@@ -251,6 +251,11 @@ data ClassEnroll14F12_raw;
 		EnrollTotal
 		EnrollEL
     ;
+	format
+		DistrictName $30.
+		SchoolName	$39.
+		ClassID	$19.
+    ;
 run;
 
 data ClassEnroll14M12_raw;
@@ -280,6 +285,12 @@ data ClassEnroll14M12_raw;
 		EnrollTwoorMore
 		EnrollTotal
 		EnrollEL
+	;
+
+	format
+		DistrictName $30.
+		SchoolName	$39.
+		ClassID	$19.
     ;
 run;
 
@@ -325,12 +336,22 @@ data CoursesTaught14_NCLB_raw;
 		IndependentStudy
 		Enrollment
 	;
+	format
+		DistrictName $30.
+		SchoolName	$39.
+		ClassID	$19.
+    ;
 run;
 
 * Concatenate male and female student enrollment files;
 
  data all_student_enrollment;
 	set ClassEnroll14F12_raw ClassEnroll14M12_raw;
+	format
+		DistrictName $30.
+		SchoolName	$39.
+		ClassID	$19.
+    ;
  run;
  
 proc sort data=Assignmentcodes_raw;
@@ -344,6 +365,11 @@ run;
 data Course_Teacher_Info;
 	merge AssignmentCodes_raw(rename=(AssignmentCode=CourseCode)) Coursestaught14_nclb_raw;
 	by CourseCode;
+	format
+		DistrictName $30.
+		SchoolName	$39.
+		ClassID	$19.
+    ;
 run;
 proc sort data=all_student_enrollment;
 	by CourseCode;
@@ -353,6 +379,11 @@ data ap_math_students;
 	by CourseCode;
 		if AssignmentSubject='Mathematics';
 			if AP_Course='Y';
+	format
+		DistrictName $30.
+		SchoolName	$39.
+		ClassID	$19.
+    ;
 run;
 
 data ap_math_summary_by_ethnicity
@@ -377,6 +408,12 @@ data ap_math_summary_by_ethnicity
 	African_American
 	White
 	Two_or_More percent8.2;
+
+	format
+		DistrictName $30.
+		SchoolName	$39.
+		ClassID	$19.
+    ;
 	
 	EnrollAmInd_Sum+EnrollAmInd;
 	EnrollAsian_Sum+EnrollAsian;
@@ -401,7 +438,7 @@ data ap_math_summary_by_ethnicity
 
 	run;
 
-data ap_math_students_by_gender
+data ap_math_students_by_gender noobs
 
 	(keep=
 		Female_Enrollment
@@ -412,6 +449,12 @@ data ap_math_students_by_gender
 	format 
 	Female_Enrollment
 	Male_Enrollment percent8.2;
+
+	format
+		DistrictName $30.
+		SchoolName	$39.
+		ClassID	$19.
+    ;
 	
 
 	if GenderCode='F' then
@@ -427,38 +470,39 @@ data ap_math_students_by_gender
 	if last;
 
 	run;
-
-proc sort data=ap_math_students;
-	by SchoolCode;
+proc sort data=ap_math_students out=ap_math_students_by_district;
+	by DistrictName;
+run;
+proc means noprint data=ap_math_students_by_district;
+    var EnrollTotal;
+    by DistrictName;
+    output out=summary_by_district sum(EnrollTotal)=DistrictAPEnrollment;
+run;
+proc sort data=summary_by_district out=ap_summary_by_district;
+	by descending DistrictAPEnrollment;
+run;
+proc freq data=ap_summary_by_district noprint;
+	by descending DistrictAPEnrollment;
+	tables DistrictName*DistrictAPEnrollment / out=DistrictAPTotals;
+	data DistrictAPTotals;
+	set DistrictAPTotals(obs=10);
+run;
+proc sort data=ap_math_students out=ap_math_students_by_school;
+	by SchoolName;
+run;
+proc means noprint data=ap_math_students_by_school;
+    var EnrollTotal;
+    by SchoolName;
+    output out=summary_by_school sum(EnrollTotal)=SchoolAPEnrollment;
+run;
+proc sort data=summary_by_school out=ap_summary_by_school;
+	by descending SchoolAPEnrollment;
+run;
+proc freq data=ap_summary_by_school noprint;
+	by descending SchoolAPEnrollment;
+	tables SchoolName*SchoolAPEnrollment / out=SchoolAPTotals;
+	data SchoolAPTotals;
+	set SchoolAPTotals(obs=10);
 run;
 
-data ap_math_students_by_school
 
-	(keep=
-	DistrictName
-	SchoolName
-	AP_Enrollment);
-
-	set ap_math_students end=last;
-
-	format
-	AP_Enrollment percent8.2;
-
-	EnrollTotal_Sum=0;
-	EnrollTotal_Sum=EnrollTotal_Sum+Enrollment;
-		
-	by SchoolCode;
-		do
-			SchoolEnrollment_Sum=SchoolEnrollment_Sum+Enrollment;
-			AP_Enrollment=SchoolEnrollment_Sum/Enrollment_Sum;
-		end;
-
-	SchoolEnrollment_Sum=0;
-
-	if last;
-
-	run;
-
-proc sort data=ap_math_students_by_school;
-	by 	descending AP_Enrollment;
-run;
