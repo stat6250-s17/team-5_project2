@@ -148,7 +148,6 @@ https://github.com/stat6250/team-5_project2/blob/master/data/CoursesTaught14_NCL
 				getnames=yes;
  				guessingrows=1000;
             run;
-
             filename tempfile clear;
         %end;
 
@@ -257,6 +256,8 @@ data ClassEnroll14F12_raw;
 		ClassID	$19.
     ;
 run;
+proc contents data=ClassEnroll14F12_raw varnum;
+run;
 
 data ClassEnroll14M12_raw;
     set ClassEnroll14M12_sorted;
@@ -293,6 +294,8 @@ data ClassEnroll14M12_raw;
 		ClassID	$19.
     ;
 run;
+proc contents data=ClassEnroll14M12_raw varnum;
+run;
 
 data AssignmentCodes_raw;
     set AssignmentCodes_sorted;
@@ -310,6 +313,8 @@ data AssignmentCodes_raw;
 		CTE_Course
 		MeetsUC_CSU_Requirements
 	;
+run;
+proc contents data=AssignmentCodes_raw varnum;
 run;
 
 data CoursesTaught14_NCLB_raw;
@@ -342,6 +347,8 @@ data CoursesTaught14_NCLB_raw;
 		ClassID	$19.
     ;
 run;
+proc contents data=CoursesTaught14_NCLB_raw varnum;
+run;
 
 * Concatenate male and female student enrollment files;
 
@@ -353,6 +360,8 @@ run;
 		ClassID	$19.
     ;
  run;
+proc contents data=all_student_enrollment varnum;
+run;
  
 proc sort data=Assignmentcodes_raw;
 	by AssignmentCode;
@@ -371,6 +380,8 @@ data Course_Teacher_Info;
 		ClassID	$19.
     ;
 run;
+proc contents data=Course_Teacher_Info varnum;
+run;
 proc sort data=all_student_enrollment;
 	by CourseCode;
 run;
@@ -384,6 +395,8 @@ data ap_math_students;
 		SchoolName	$39.
 		ClassID	$19.
     ;
+run;
+proc contents data=ap_math_students varnum;
 run;
 
 data ap_math_summary_by_ethnicity
@@ -437,8 +450,10 @@ data ap_math_summary_by_ethnicity
 	if last;
 
 	run;
+proc contents data=ap_math_summary_by_ethnicity varnum;
+run;
 
-data ap_math_students_by_gender noobs;
+data ap_math_students_by_gender
 
 	(keep=
 		Female_Enrollment
@@ -470,18 +485,14 @@ data ap_math_students_by_gender noobs;
 	if last;
 
 	run;
+proc contents data=ap_math_students_by_gender varnum;
+run;
 proc sort data=ap_math_students out=ap_math_students_by_ds;
 	by DistrictCode SchoolCode;
 run;
 proc means data=ap_math_students_by_ds;
 	var Enrollment;
 run;
-proc format;
-	value Enrollmentfmt	low-5='<2 sd'
-						6-23='1<sd<2 below'
-						24-41='sd<=1 below'
-						42-58='sd<=1 above'
-						59-high='>1 sd above';
+proc freq data=ap_math_students_by_ds;
+	tables SchoolName*Enrollment;
 run;
-
-
