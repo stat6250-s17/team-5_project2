@@ -251,11 +251,6 @@ data ClassEnroll14F12_raw;
 		EnrollTotal
 		EnrollEL
     ;
-	format
-		DistrictName $30.
-		SchoolName	$39.
-		ClassID	$19.
-    ;
 run;
 
 data ClassEnroll14M12_raw;
@@ -286,12 +281,6 @@ data ClassEnroll14M12_raw;
 		EnrollTotal
 		EnrollEL
 	;
-
-	format
-		DistrictName $30.
-		SchoolName	$39.
-		ClassID	$19.
-    ;
 run;
 
 data AssignmentCodes_raw;
@@ -336,22 +325,23 @@ data CoursesTaught14_NCLB_raw;
 		IndependentStudy
 		Enrollment
 	;
-	format
-		DistrictName $30.
-		SchoolName	$39.
-		ClassID	$19.
-    ;
 run;
 
 * Concatenate male and female student enrollment files;
 
  data all_student_enrollment;
-	set ClassEnroll14F12_raw ClassEnroll14M12_raw;
-	format
-		DistrictName $30.
-		SchoolName	$39.
+	length
+		DistrictName $39.
+		SchoolName	$52.
 		ClassID	$19.
     ;
+	format
+		DistrictName $39.
+		SchoolName	$52.
+		ClassID	$19.
+    ;
+
+	set ClassEnroll14M12_raw ClassEnroll14F12_raw;
  run;
  
 proc sort data=Assignmentcodes_raw;
@@ -363,27 +353,18 @@ proc sort data=Coursestaught14_nclb_raw;
 run;
 
 data Course_Teacher_Info;
-	merge AssignmentCodes_raw(rename=(AssignmentCode=CourseCode)) Coursestaught14_nclb_raw;
+	merge Coursestaught14_nclb_raw AssignmentCodes_raw(rename=(AssignmentCode=CourseCode));
 	by CourseCode;
-	format
-		DistrictName $30.
-		SchoolName	$39.
-		ClassID	$19.
-    ;
 run;
 proc sort data=all_student_enrollment;
 	by CourseCode;
 run;
 data ap_math_students;
-	merge all_student_enrollment Course_Teacher_Info;
+	merge Course_Teacher_Info all_student_enrollment;
 	by CourseCode;
 		if AssignmentSubject='Mathematics';
 			if AP_Course='Y';
-	format
-		DistrictName $30.
-		SchoolName	$39.
-		ClassID	$19.
-    ;
+
 run;
 
 data ap_math_summary_by_ethnicity
@@ -408,12 +389,6 @@ data ap_math_summary_by_ethnicity
 	African_American
 	White
 	Two_or_More percent8.2;
-
-	format
-		DistrictName $30.
-		SchoolName	$39.
-		ClassID	$19.
-    ;
 	
 	EnrollAmInd_Sum+EnrollAmInd;
 	EnrollAsian_Sum+EnrollAsian;
@@ -449,13 +424,6 @@ data ap_math_students_by_gender noobs
 	format 
 	Female_Enrollment
 	Male_Enrollment percent8.2;
-
-	format
-		DistrictName $30.
-		SchoolName	$39.
-		ClassID	$19.
-    ;
-	
 
 	if GenderCode='F' then
 		EnrollFemale_Sum+EnrollTotal;
