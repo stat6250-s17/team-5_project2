@@ -108,13 +108,46 @@ X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPA
 *******************************************************************************;
 * Research Question Analysis Starting Point;
 *******************************************************************************;
-*
+title1 justify=left
+'[Research Question 1] What is the ethnic breakdown of students in AP math classes?'
+;
 
-[Research Question 1] What is the ethnic breakdown of students in AP math classes?
-(Rationale: This determines whether minority students are often excluded from 
-advanced math classes);
+title2 justify=left
+'Rationale: This study investigates the proportions of minority student participation in advanced math classes.' 
+;
+
+footnote1 justify=left
+"The data shows that AP Math classes are dominated by Whites (32%) and Asians (30%), but that representation by Hispanic students is nearly on a par, at 27%. African-American (3%), Pacific Islander (<1%), American Indian (<1%), Filipino (5%), and students self-identified as being of 2 or more ethnicities (3%) continue to be poorly represented." 
+;
+
+footnote2 justify=left
+"Further investigation would be necessary to investigate proportions of each demographic in schools of high and low socioeconomic status to determine access to pathways to higher math in communities according to economic opportunity." 
+;
+
+footnote3 justify=left
+"However the data indicates that Hispanic students are catching up proportionally. The question remains as to whether it is because of an overall increase in the Hispanic population overall, or an increase in opportunity in low-income commmunities or improved access to the curriculum for English language learners."
+;
+
+*
+Note: This compares the accumulated values in columns EnrollNoEthRptd, 
+EnrollAmInd, EnrollAsian, EnrollPacIsl, EnrollFilipino, EnrollHispanic, 
+EnrollAfrAm, EnrollWhite, EnrollTwoorMore,in the merged files for male and 
+female 12th-grade enrollment with accumulated values for EnrollTotal.
+
+Methodology: Male and female enrollment files were combined to create a master
+student file, then course data and teacher assignment data were combined to 
+form a master file about course and teacher info. Finally, those two files were
+merged and then used to investigate these research questions to subset into
+relevant specific datasets.
+
+Limitations: This methodology does not account for schools with missing data,
+nor does it attempt to validate data in any way.
+
+Followup Steps: More carefully clean values in order to filter out any possible
+illegal values, and better handle missing data, e.g., by using a previous year's
+data or a rolling average of previous years' data as a proxy.
+;
 	
-title "Ethnic Makeup of Students in AP Math Classes";
 proc print data=ap_math_summary_by_ethnicity noobs;
 	var
 	American_Indian
@@ -125,44 +158,121 @@ proc print data=ap_math_summary_by_ethnicity noobs;
 	African_American
 	White
 	Two_or_More;
+
 run;
+
 title;
+footnote;
 
+title1 justify=left
+'[Research Question 2] What is the percentage participation of male v. female students in AP math classes?' 
+;
 
-*[Research Question 2] What is the percentage participation of male v. female
-students in AP math classes? 
-(Rationale: This determines whether there is gender parity in access to and
-participation in advanced math classes.);
+title2 justify=left
+'Rationale: This determines whether there is gender parity in access to and participation in advanced math classes.' 
+;
 
-title "Gender Makeup of Students in AP Math Classes";
+footnote1 justify=left
+"The data shows that gender parity in AP Math classes is nearly 50-50, with female representation approximately 1% greater (50.4%:49.6%)." 
+;
+
+footnote2 justify=left
+"Further investigation would be necessary to investigate proportions of each demographic in regards to gender equity." 
+;
+
+footnote3 justify=left
+"However the data indicates that female students are enrolling in AP Math classes overall on a par with male students." 
+;
+
+*
+Note: This compares the accumulated values in the accumulated EnrollTotal 
+columns respectively for male and female 12th-grade enrollment with 
+accumulated values for EnrollTotal overall.
+
+Methodology: Male and female enrollment files were combined to create a master
+student file, then course data and teacher assignment data were combined to 
+form a master file about course and teacher info. Finally, those two files were
+merged and then used to investigate these research questions to subset into
+relevant specific datasets.
+
+Limitations: This methodology does not account for schools with missing data,
+nor does it attempt to validate data in any way.
+
+Followup Steps: More carefully clean values in order to filter out any possible
+illegal values, and better handle missing data, e.g., by using a previous year's
+data or a rolling average of previous years' data as a proxy.
+;
+
 proc print data=ap_math_students_by_gender noobs;
 	var
 	Female_Enrollment
 	Male_Enrollment;
 
-	
-
 run;
+
 title;
+footnote;
 
 
-*[Research Question 3] What are the top 10 districts and top 10 schools in terms of students enrolled
-in AP math classes?
+title1 justify=left
+'[Research Question 3] What are the top 10 districts and top 10 schools in terms of students enrolled in AP math classes?' 
+;
 
-(Rationale: This would determine access to high-quality math education socio-economic factors by district
-and school.) 
+title2 justify=left
+'Rationale: This would determine access to high-quality math education socio-economic factors by district and school.' 
+;
 
+title3 'AP Math Enrollment by District'
+;
+
+*
+Note: This sorts summed TotalEnroll by District and by School in descending order
+and takes the top 10 performing districts and schools by AP Math enrollment.
+
+Methodology: Male and female enrollment files were combined to create a master
+student file, then course data and teacher assignment data were combined to 
+form a master file about course and teacher info. Finally, those two files were
+merged and then used to investigate these research questions to subset into
+relevant specific datasets.
+
+Limitations: This methodology does not account for schools with missing data,
+nor does it attempt to validate data in any way.
+
+Followup Steps: More carefully clean values in order to filter out any possible
+illegal values, and better handle missing data, e.g., by using a previous year's
+data or a rolling average of previous years' data as a proxy.
+;
+	
+*
 [Reason for Choice]To explore access to access and opportunity in higher math education.
 ;
 
 
-
-title "AP Math Enrollment by District";
 proc print data=DistrictAPTotals;
+
 run;
+
 title;
 
-title "AP Math Enrollment by School";
+title1 'AP Math Enrollment by School'
+;
+
+footnote1 justify=left
+"The data shows a surprisingly high enrollment in the known low-income, majority Hispanic district of East Side Union High School District in East San Jose. The remaining districts are familiar enclaves of typically high socio-economic status." 
+;
+
+footnote2 justify=left
+"Further investigation would be necessary to investigate proportions of each demographic cross-tabulated with socioeconomic status to determine access to pathways to higher math in communities according to economic opportunity." 
+;
+
+footnote3 justify=left
+"However the data indicates again that Hispanic students are catching up proportionally. The question remains as to whether it is because of an overall increase in the Hispanic population overall, or an increase in opportunity in low-income commmunities or improved access to the curriculum for English language learners or perhaps because of East Side Union's proximity to opportunities in Silicon Valley." 
+;
+
 proc print data=SchoolAPTotals;
+
 run;
+
+
 title;
+footnote;

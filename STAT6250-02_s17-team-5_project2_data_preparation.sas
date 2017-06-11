@@ -139,19 +139,18 @@ https://github.com/stat6250/team-5_project2/blob/master/data/CoursesTaught14_NCL
             proc http
                 method="get"
                 url="&url."
-                out=tempfile
-                ;
+                out=tempfile;
             run;
+
             proc import out=&dsn.
                 file=tempfile
                 dbms=&filetype. replace;
-				getnames=yes;
- 				guessingrows=1000;
+	    	    getnames=yes;
+ 	    	    guessingrows=1000;
             run;
 
             filename tempfile clear;
         %end;
-
 %mend;
 options spool;
 
@@ -181,296 +180,435 @@ options spool;
   removing blank rows, if needed;
 
 proc sort
-        nodupkey
-        data=ClassEnroll14F12
-        dupout=ClassEnroll14F12_dups
-        out=ClassEnroll14F12_sorted
-    ;
+    nodupkey
+    data=ClassEnroll14F12
+    dupout=ClassEnroll14F12_dups
+    out=ClassEnroll14F12_sorted;
+
     by
-		DistrictCode
-		SchoolCode
-		ClassID
-		CourseCode;
+        DistrictCode
+        SchoolCode
+        ClassID
+        CourseCode;
 run;
 proc sort
-        nodupkey
-        data=ClassEnroll14M12
-        dupout=ClassEnroll14M12_dups
-        out=ClassEnroll14M12_sorted
-    ;
+    nodupkey
+    data=ClassEnroll14M12
+    dupout=ClassEnroll14M12_dups
+    out=ClassEnroll14M12_sorted;
+
     by	
-		DistrictCode
-		SchoolCode
-		ClassID
-		CourseCode;
+        DistrictCode
+        SchoolCode
+        ClassID
+        CourseCode;
 run;
 proc sort
-        nodupkey
-        data=AssignmentCodes
-        dupout=AssignmentCodes_dups
-        out=AssignmentCodes_sorted
-    ;
+    nodupkey
+    data=AssignmentCodes
+    dupout=AssignmentCodes_dups
+    out=AssignmentCodes_sorted;
+
     by
-		AssignmentCode;
+        AssignmentCode;
 run;
 proc sort
-        nodupkey
-        data=CoursesTaught14_NCLB
-        dupout=CoursesTaught14_NCLB_dups
-        out=CoursesTaught14_NCLB_sorted
-    ;
+    nodupkey
+    data=CoursesTaught14_NCLB
+    dupout=CoursesTaught14_NCLB_dups
+    out=CoursesTaught14_NCLB_sorted;
+
     by
         ClassID;
 run;
 
+* set up variables in each file with keep/retain statements;
+
 data ClassEnroll14F12_raw;
     set ClassEnroll14F12_sorted;
-	drop
-	    FileCreated
-	;
+
+    keep
+        AcademicYear
+        DistrictCode
+        SchoolCode
+        CountyName
+        DistrictName
+        SchoolName
+        ClassID
+        CourseCode
+        GradeLevel
+        GenderCode
+        EnrollNoEthRptd
+        EnrollAmInd
+        EnrollAsian
+        EnrollPacIsl
+        EnrollFilipino
+        EnrollHispanic
+        EnrollAfrAm
+        EnrollWhite
+        EnrollTwoorMore
+        EnrollTotal
+        EnrollEL;
+
     retain
-	    AcademicYear
-		DistrictCode
-		SchoolCode
-		CountyName
-		DistrictName
-		SchoolName
-		ClassID
-		CourseCode
-		GradeLevel
-		GenderCode
-		EnrollNoEthRptd
-		EnrollAmInd
-		EnrollAsian
-		EnrollPacIsl
-		EnrollFilipino
-		EnrollHispanic
-		EnrollAfrAm
-		EnrollWhite
-		EnrollTwoorMore
-		EnrollTotal
-		EnrollEL
-    ;
+        AcademicYear
+        DistrictCode
+        SchoolCode
+        CountyName
+        DistrictName
+        SchoolName
+        ClassID
+        CourseCode
+        GradeLevel
+        GenderCode
+        EnrollNoEthRptd
+        EnrollAmInd
+        EnrollAsian
+        EnrollPacIsl
+        EnrollFilipino
+        EnrollHispanic
+        EnrollAfrAm
+        EnrollWhite
+        EnrollTwoorMore
+        EnrollTotal
+        EnrollEL;
+
 run;
 
 data ClassEnroll14M12_raw;
     set ClassEnroll14M12_sorted;
-	drop
-	    FileCreated
-	;
+
+    keep
+        AcademicYear
+        DistrictCode
+        SchoolCode
+        CountyName
+        DistrictName
+        SchoolName
+        ClassID
+        CourseCode
+        GradeLevel
+        GenderCode
+        EnrollNoEthRptd
+        EnrollAmInd
+        EnrollAsian
+        EnrollPacIsl
+        EnrollFilipino
+        EnrollHispanic
+        EnrollAfrAm
+        EnrollWhite
+        EnrollTwoorMore
+        EnrollTotal
+        EnrollEL;
+
     retain
-	    AcademicYear
-		DistrictCode
-		SchoolCode
-		CountyName
-		DistrictName
-		SchoolName
-		ClassID
-		CourseCode
-		GradeLevel
-		GenderCode
-		EnrollNoEthRptd
-		EnrollAmInd
-		EnrollAsian
-		EnrollPacIsl
-		EnrollFilipino
-		EnrollHispanic
-		EnrollAfrAm
-		EnrollWhite
-		EnrollTwoorMore
-		EnrollTotal
-		EnrollEL
-	;
+        AcademicYear
+        DistrictCode
+        SchoolCode
+        CountyName
+        DistrictName
+        SchoolName
+        ClassID
+        CourseCode
+        GradeLevel
+        GenderCode
+        EnrollNoEthRptd
+        EnrollAmInd
+        EnrollAsian
+        EnrollPacIsl
+        EnrollFilipino
+        EnrollHispanic
+        EnrollAfrAm
+        EnrollWhite
+        EnrollTwoorMore
+        EnrollTotal
+        EnrollEL;
+
 run;
 
 data AssignmentCodes_raw;
     set AssignmentCodes_sorted;
-	drop
-	    EffectiveStartDate
-		EffectiveEndDate
-	;
-	retain
-	    AssignmentCode
-		AssignmentName
-		AssignmentType
-		AssignmentSubject
-		AP_Course
-		IB_Course
-		CTE_Course
-		MeetsUC_CSU_Requirements
-	;
+
+    keep
+        AssignmentCode
+        AssignmentName
+        AssignmentType
+        AssignmentSubject
+        AP_Course
+        IB_Course
+        CTE_Course
+        MeetsUC_CSU_Requirements;
+
+    retain
+        AssignmentCode
+        AssignmentName
+        AssignmentType
+        AssignmentSubject
+        AP_Course
+        IB_Course
+        CTE_Course
+        MeetsUC_CSU_Requirements;
+
 run;
 
 data CoursesTaught14_NCLB_raw;
     set CoursesTaught14_NCLB_sorted;
-	drop
-	    MultipleTeacherCode
-		CTE_FundingProvider
-		SEID_Indicator
-	;
-	retain
-	    AcademicYear
-		DistrictCode
-		schoolCode
-		CountyName
-		DistrictName
-		SchoolName
-		ClassID
-		CourseCode
-		ClassCourseID
-		UC_CSU_Approved
-		NCLB_Core
-		NCLB_HQT
-		DistanceLearning
-		IndependentStudy
-		Enrollment
-	;
+
+    keep
+        AcademicYear
+        DistrictCode
+        schoolCode
+        CountyName
+        DistrictName
+        SchoolName
+        ClassID
+        CourseCode
+        ClassCourseID
+        UC_CSU_Approved
+        NCLB_Core
+        NCLB_HQT
+        DistanceLearning
+        IndependentStudy
+        Enrollment;
+
+    retain
+        AcademicYear
+        DistrictCode
+        schoolCode
+        CountyName
+        DistrictName
+        SchoolName
+        ClassID
+        CourseCode
+        ClassCourseID
+        UC_CSU_Approved
+        NCLB_Core
+        NCLB_HQT
+        DistanceLearning
+        IndependentStudy
+        Enrollment;
+
 run;
 
-* Concatenate male and female student enrollment files;
+* Concatenate male and female student enrollment files and set length of
+variables with differing lengths before concatenation;
 
  data all_student_enrollment;
-	length
-		DistrictName $39.
-		SchoolName	$52.
-		ClassID	$19.
-    ;
-	format
-		DistrictName $39.
-		SchoolName	$52.
-		ClassID	$19.
-    ;
+    length
+        DistrictName    $39.
+        SchoolName    $52.
+        ClassID    $19.;
 
-	set ClassEnroll14M12_raw ClassEnroll14F12_raw;
- run;
+    format
+        DistrictName    $39.
+        SchoolName    $52.
+        ClassID    $19.;
+
+    set ClassEnroll14M12_raw ClassEnroll14F12_raw;
+
+run;
  
+* Sort files before merging;
+
 proc sort data=Assignmentcodes_raw;
-	by AssignmentCode;
+    by AssignmentCode;
+
 run;
 
 proc sort data=Coursestaught14_nclb_raw;
-	by CourseCode;
+    by CourseCode;
+
 run;
+
+* Merge files with course info and teacher info into Course_Teacher_info file;
 
 data Course_Teacher_Info;
-	merge Coursestaught14_nclb_raw AssignmentCodes_raw(rename=(AssignmentCode=CourseCode));
-	by CourseCode;
-run;
-proc sort data=all_student_enrollment;
-	by CourseCode;
-run;
-data ap_math_students;
-	merge Course_Teacher_Info all_student_enrollment;
-	by CourseCode;
-		if AssignmentSubject='Mathematics';
-			if AP_Course='Y';
+    merge AssignmentCodes_raw(rename=(AssignmentCode=CourseCode)) Coursestaught14_nclb_raw;
+
+    by CourseCode;
 
 run;
+
+* Sort student info master file by Course info before merging with Course_Teacher_info file;
+
+proc sort data=all_student_enrollment;
+    by CourseCode;
+
+run;
+
+* Select all students who are enrolled in AP Math courses and subset as ap_math_students file;
+
+data ap_math_students;
+    merge all_student_enrollment Course_Teacher_Info;
+
+    by CourseCode;
+        if AssignmentSubject='Mathematics' and AP_Course='Y';
+
+run;
+
+* Calculate accumulated percentages of students of designated ethnic groups in subsetted 
+  ap_math_summary_by_ethnicity file;
 
 data ap_math_summary_by_ethnicity
-	(keep=
-	American_Indian
-	Asian
-	Pacific_Islander
-	Filipino
-	Hispanic
-	African_American
-	White
-	Two_or_More);
+    (keep=
+    American_Indian
+    Asian
+    Pacific_Islander
+    Filipino
+    Hispanic
+    African_American
+    White
+    Two_or_More);
 
-	set ap_math_students end=last;
+    set ap_math_students end=last;
 
-	format 
-	American_Indian
-	Asian
-	Pacific_Islander
-	Filipino
-	Hispanic
-	African_American
-	White
-	Two_or_More percent8.2;
+    format 
+        American_Indian
+        Asian
+        Pacific_Islander
+        Filipino
+        Hispanic
+        African_American
+        White
+        Two_or_More percent8.2;
 	
-	EnrollAmInd_Sum+EnrollAmInd;
-	EnrollAsian_Sum+EnrollAsian;
-	EnrollPacIsl_Sum+EnrollPacIsl;
-	EnrollFilipino_Sum+EnrollFilipino;
-	EnrollHispanic_Sum+EnrollHispanic;
-	EnrollAfrAm_Sum+EnrollAfrAm;
-	EnrollWhite_Sum+EnrollWhite;
-	EnrollTwoorMore_Sum+EnrollTwoorMore;
-	EnrollTotal_Sum+EnrollTotal;
+    EnrollAmInd_Sum+EnrollAmInd;
+    EnrollAsian_Sum+EnrollAsian;
+    EnrollPacIsl_Sum+EnrollPacIsl;
+    EnrollFilipino_Sum+EnrollFilipino;
+    EnrollHispanic_Sum+EnrollHispanic;
+    EnrollAfrAm_Sum+EnrollAfrAm;
+    EnrollWhite_Sum+EnrollWhite;
+    EnrollTwoorMore_Sum+EnrollTwoorMore;
+    EnrollTotal_Sum+EnrollTotal;
 
-	American_Indian=EnrollAmInd_Sum/EnrollTotal_Sum;
-	Asian=EnrollAsian_Sum/EnrollTotal_Sum;
-	Pacific_Islander=EnrollPacIsl_Sum/EnrollTotal_Sum;
-	Filipino=EnrollFilipino_Sum/EnrollTotal_Sum;
-	Hispanic=EnrollHispanic_Sum/EnrollTotal_Sum;
-	African_American=EnrollAfrAm_Sum/EnrollTotal_Sum;
-	White=EnrollWhite_Sum/EnrollTotal_Sum;
-	Two_or_More=EnrollTwoorMore_Sum/EnrollTotal_Sum;
+    American_Indian=EnrollAmInd_Sum/EnrollTotal_Sum;
+    Asian=EnrollAsian_Sum/EnrollTotal_Sum;
+    Pacific_Islander=EnrollPacIsl_Sum/EnrollTotal_Sum;
+    Filipino=EnrollFilipino_Sum/EnrollTotal_Sum;
+    Hispanic=EnrollHispanic_Sum/EnrollTotal_Sum;
+    African_American=EnrollAfrAm_Sum/EnrollTotal_Sum;
+    White=EnrollWhite_Sum/EnrollTotal_Sum;
+    Two_or_More=EnrollTwoorMore_Sum/EnrollTotal_Sum;
 
-	if last;
+    if last;
 
-	run;
+run;
+
+* Calculate accumulated percentages of male and female students respectively enrolled
+  in AP math classes into am_math_students_by_gender file;
 
 data ap_math_students_by_gender noobs
 
-	(keep=
-		Female_Enrollment
-		Male_Enrollment);
+    (keep=
+        Female_Enrollment
+        Male_Enrollment);
 
-	set ap_math_students end=last;
+    set ap_math_students end=last;
 
-	format 
-	Female_Enrollment
-	Male_Enrollment percent8.2;
+    format 
+        Female_Enrollment
+        Male_Enrollment percent8.2;
 
-	if GenderCode='F' then
-		EnrollFemale_Sum+EnrollTotal;
-	else if GenderCode='M' then
-		EnrollMale_Sum+EnrollTotal;
+    if GenderCode='F' then
+        EnrollFemale_Sum+EnrollTotal;
 
-	EnrollTotal_Sum+EnrollTotal;
+    else if GenderCode='M' then
+        EnrollMale_Sum+EnrollTotal;
 
-	Female_Enrollment=EnrollFemale_Sum/EnrollTotal_Sum;
-	Male_Enrollment=EnrollMale_Sum/EnrollTotal_Sum;
+    EnrollTotal_Sum+EnrollTotal;
 
-	if last;
+    Female_Enrollment=EnrollFemale_Sum/EnrollTotal_Sum;
+    Male_Enrollment=EnrollMale_Sum/EnrollTotal_Sum;
 
-	run;
+    if last;
+
+run;
+
+* Sort student file by DistrictName for use in proc means;
+
 proc sort data=ap_math_students out=ap_math_students_by_district;
 	by DistrictName;
+
 run;
+
+* Sum total enrollment overall and output new column named DistrictAPEnrollment
+  in summary_by_district file;
+
 proc means noprint data=ap_math_students_by_district;
     var EnrollTotal;
+
     by DistrictName;
+
     output out=summary_by_district sum(EnrollTotal)=DistrictAPEnrollment;
+
 run;
+
+* Sort summary_by_district file just created by descending DistrictAPEnrollment
+  for use in creating table in proc freq;
+
 proc sort data=summary_by_district out=ap_summary_by_district;
-	by descending DistrictAPEnrollment;
+    by descending DistrictAPEnrollment;
+
 run;
+
+* Create table cross-tabulating DistrictName and DistrictAPEnrollment and 
+  output as DistrictAPTotals file for printing in order of descending
+  DistrictAPEnrollment;
+
 proc freq data=ap_summary_by_district noprint;
-	by descending DistrictAPEnrollment;
-	tables DistrictName*DistrictAPEnrollment / out=DistrictAPTotals;
-	data DistrictAPTotals;
-	set DistrictAPTotals(obs=10);
+    by descending DistrictAPEnrollment;
+
+    tables DistrictName*DistrictAPEnrollment / out=DistrictAPTotals;
+
+    * Embed a data statement to limit the number of observations displayed;
+
+    data DistrictAPTotals;
+    set DistrictAPTotals(obs=10);
+
 run;
+
+* Sort ap_math_students file just created by SchoolName for use proc means;
+
 proc sort data=ap_math_students out=ap_math_students_by_school;
-	by SchoolName;
+    by SchoolName;
+
 run;
+
+* Sum total enrollment overall and output new column named SchoolAPEnrollment
+  in summary_by_school file;
+
 proc means noprint data=ap_math_students_by_school;
     var EnrollTotal;
+
     by SchoolName;
+
     output out=summary_by_school sum(EnrollTotal)=SchoolAPEnrollment;
+
 run;
+
+* Sort summary_by_school file just created by descending SchoolAPEnrollment
+  for use in creating table in proc freq;
+
 proc sort data=summary_by_school out=ap_summary_by_school;
-	by descending SchoolAPEnrollment;
+    by descending SchoolAPEnrollment;
+
 run;
+
+* Create table cross-tabulating SchoolName and SchoolAPEnrollment and 
+  output as SchoolAPTotals file for printing in order of descending
+  SchoolAPEnrollment;
+
 proc freq data=ap_summary_by_school noprint;
-	by descending SchoolAPEnrollment;
-	tables SchoolName*SchoolAPEnrollment / out=SchoolAPTotals;
-	data SchoolAPTotals;
-	set SchoolAPTotals(obs=10);
+    by descending SchoolAPEnrollment;
+
+    tables SchoolName*SchoolAPEnrollment / out=SchoolAPTotals;
+
+    * Embed a data statement to limit the number of observations displayed;
+
+    data SchoolAPTotals;
+    set SchoolAPTotals(obs=10);
+
 run;
 
 
