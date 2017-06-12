@@ -561,7 +561,9 @@ proc freq data=ap_summary_by_district noprint;
 
     tables DistrictName*DistrictAPEnrollment / out=DistrictAPTotals;
 
-    * Embed a data statement to limit the number of observations displayed;
+    * Embed a data statement to limit the number of observations displayed.Tried 
+	  doing this in a proper separate data statement, but for some 
+	  reason it didn't work the same way;
 
     data DistrictAPTotals;
     set DistrictAPTotals(obs=10);
@@ -604,7 +606,9 @@ proc freq data=ap_summary_by_school noprint;
 
     tables SchoolName*SchoolAPEnrollment / out=SchoolAPTotals;
 
-    * Embed a data statement to limit the number of observations displayed;
+  * Embed a data statement to limit the number of observations displayed.
+	Tried doing this in a proper separate data statement, but for some 
+	reason it didn't work the same way;
 
     data SchoolAPTotals;
     set SchoolAPTotals(obs=10);
