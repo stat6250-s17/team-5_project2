@@ -248,7 +248,7 @@ data or a rolling average of previous years' data as a proxy.
 ;
 
 
-proc print data=DistrictAPTotals;
+proc print data=DistrictAPTotals10;
 
 run;
 
@@ -269,7 +269,7 @@ footnote3 justify=left
 "However the data indicates again that Hispanic students are catching up proportionally. The question remains as to whether it is because of an overall increase in the Hispanic population overall, or an increase in opportunity in low-income commmunities or improved access to the curriculum for English language learners or perhaps because of East Side Union's proximity to opportunities in Silicon Valley." 
 ;
 
-proc print data=SchoolAPTotals;
+proc print data=SchoolAPTotals10;
 
 run;
 
