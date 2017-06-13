@@ -603,7 +603,9 @@ by descending DistrictAPEnrollment;
 
 run;
 
-* Limit the number of observations displayed;
+  * Embed a data statement to limit the number of observations displayed.Tried 
+	  doing this in a proper separate data statement, but for some 
+	  reason it didn't work the same way;
 
  data DistrictAPTotals10;
     set DistrictAPTotals (obs=10);
@@ -657,15 +659,11 @@ proc freq data=ap_summary_by_school noprint;
     tables SchoolName*SchoolAPEnrollment / nopercent nocum 
     output out=SchoolAPTotals;
 
-run;
-
-* Limit the number of observations displayed to create a top-10 list;
+  * Embed a data statement to limit the number of observations displayed.
+	Tried doing this in a proper separate data statement, but for some 
+	reason it didn't work the same way;
 
 data SchoolAPTotals10;
     set SchoolAPTotals (obs=10);
 
 run;
-
-
-
-
