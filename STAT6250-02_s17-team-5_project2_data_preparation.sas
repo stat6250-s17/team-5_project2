@@ -222,7 +222,10 @@ proc sort
         ClassID;
 run;
 
-* set up variables in each file with keep/retain statements;
+* Variables in ClassEnroll14F12_raw and ClassEnroll14M12_raw relating to student 
+  enrollment information and student demographics such as self-identified ethnicity 
+  and gender by school and district. Set up variables in each file with keep/retain 
+  statements;
 
 data ClassEnroll14F12_raw;
     set ClassEnroll14F12_sorted;
@@ -325,6 +328,8 @@ data ClassEnroll14M12_raw;
         EnrollEL;
 
 run;
+* Variables in AssignmentCodes relating to class and course description information. 
+  Set up variables in each file with keep/retain statements;
 
 data AssignmentCodes_raw;
     set AssignmentCodes_sorted;
@@ -350,6 +355,8 @@ data AssignmentCodes_raw;
         MeetsUC_CSU_Requirements;
 
 run;
+* Variables in CoursesTaught14_NCLB relating to class and course description information. 
+  Set up variables in each file with keep/retain statements;
 
 data CoursesTaught14_NCLB_raw;
     set CoursesTaught14_NCLB_sorted;
@@ -390,8 +397,10 @@ data CoursesTaught14_NCLB_raw;
 
 run;
 
-* Concatenate male and female student enrollment files and set length of
-variables with differing lengths before concatenation;
+* Combine files vertically to add male student data (ClassEnroll14M12_raw) to female 
+  student data (ClassEnroll14F12_raw) to calculate whole student population results for
+  12th-grade students. Concatenate files and set length of variables with differing lengths
+  in the source files to a new default length in the resulting all_student_enrollment file;
 
  data all_student_enrollment;
     length
@@ -408,7 +417,11 @@ variables with differing lengths before concatenation;
 
 run;
  
-* Sort files before merging;
+* Prepare to combine files horizontally to accumulate information about course info.
+  Files must be sorted on the merge variable for a one-to-one match. CourseCode/
+  AssignmentCode is unique for each course offered. Sort files on 
+  AssignmentCode in Assignmentcodes_raw, and CourseCode in Coursestaught14_nclb_raw 
+  before merging;
 
 proc sort data=Assignmentcodes_raw;
     by AssignmentCode;
@@ -420,7 +433,11 @@ proc sort data=Coursestaught14_nclb_raw;
 
 run;
 
-* Merge files with course info and teacher info into Course_Teacher_info file;
+* Course description and teacher info in Course_Teacher_Info is merged with class 
+  enrollment data for all students in all_student_enrollment to combine course information
+  and teacher qualification (NCLB qualification and type - by 
+  exam, by subject, by HOUSE exemption, etc.) data. The new resulting dataset 
+  ap_math_students is filtered to include only students enrolled in ap-level math courses;
 
 data Course_Teacher_Info;
     merge AssignmentCodes_raw(rename=(AssignmentCode=CourseCode)) Coursestaught14_nclb_raw;
@@ -446,8 +463,11 @@ data ap_math_students;
 
 run;
 
-* Calculate accumulated percentages of students of designated ethnic groups in subsetted 
-  ap_math_summary_by_ethnicity file;
+* This step investigates percentages of each ethnicity of students available to determine
+  if non-European ethnic students have gained more opportunity and access to tech career
+  pathways through their representative enrollment in advanced math classes. 
+  Accumulated percentages of students of designated ethnic groups are calculated in the
+  subsetted file ap_math_summary_by_ethnicity;
 
 data ap_math_summary_by_ethnicity
     (keep=
@@ -495,8 +515,11 @@ data ap_math_summary_by_ethnicity
 
 run;
 
-* Calculate accumulated percentages of male and female students respectively enrolled
-  in AP math classes into am_math_students_by_gender file;
+* This step investigates percentages of each gender of students to determine
+  if female students have gained more opportunity and access to tech career
+  pathways through their representative enrollment in advanced math classes. 
+  Accumulated percentages of students of each gender are calculated in the
+  subsetted file ap_math_students_by_gender;
 
 data ap_math_students_by_gender noobs
 
@@ -525,15 +548,17 @@ data ap_math_students_by_gender noobs
 
 run;
 
-* Sort student file by DistrictName for use in proc means;
+* Prepare student enrollment data to be grouped and displayed by district. 
+  Sort ap_math_students file by DistrictName for use in proc means;
 
 proc sort data=ap_math_students out=ap_math_students_by_district;
 	by DistrictName;
 
 run;
 
-* Sum total enrollment overall and output new column named DistrictAPEnrollment
-  in summary_by_district file;
+* Sum up student AP-math enrollment by district in sorted ap_math_students_by_district
+  file and output results to summary_by_district, with additional new column named 
+  DistrictAPEnrollment;
 
 proc means noprint data=ap_math_students_by_district;
     var EnrollTotal;
@@ -544,7 +569,17 @@ proc means noprint data=ap_math_students_by_district;
 
 run;
 
-* Sort summary_by_district file just created by descending DistrictAPEnrollment
+* This is to investigate which districts offer the most opportunity for 
+  students in terms of classes at the AP level in math as well as 
+  participation levels in terms of enrollment. This is of interest 
+  to see where geographically and demographically these districts are
+  located, whether in terms of more or less household income and 
+  whether urban/suburban locales. 
+
+  Create a top-10 list   of districts with the highest enrollment of students
+  in AP-math. Prepare for use in proc freq for display by first sorting 
+  summary_by_district file just created by descending DistrictAPEnrollment
+  and output results to new file, ap_summary_by_district
   for use in creating table in proc freq;
 
 proc sort data=summary_by_district out=ap_summary_by_district;
@@ -557,16 +592,23 @@ run;
   DistrictAPEnrollment;
 
 proc freq data=ap_summary_by_district noprint;
-    by descending DistrictAPEnrollment;
 
-    tables DistrictName*DistrictAPEnrollment / out=DistrictAPTotals;
+    tables DistrictName*DistrictAPEnrollment / nopercent nocum out=DistrictAPTotals;
 
-    * Embed a data statement to limit the number of observations displayed.Tried 
+run;
+
+proc sort data=DistrictAPTotals;
+
+by descending DistrictAPEnrollment;
+
+run;
+
+  * Embed a data statement to limit the number of observations displayed.Tried 
 	  doing this in a proper separate data statement, but for some 
 	  reason it didn't work the same way;
 
-    data DistrictAPTotals;
-    set DistrictAPTotals(obs=10);
+ data DistrictAPTotals10;
+    set DistrictAPTotals (obs=10);
 
 run;
 
@@ -577,8 +619,9 @@ proc sort data=ap_math_students out=ap_math_students_by_school;
 
 run;
 
-* Sum total enrollment overall and output new column named SchoolAPEnrollment
-  in summary_by_school file;
+* Sum up student AP-math enrollment by school in sorted ap_math_students_by_school
+  file and output results to summary_by_school, with additional new column named 
+  SchoolAPEnrollment;
 
 proc means noprint data=ap_math_students_by_school;
     var EnrollTotal;
@@ -589,7 +632,17 @@ proc means noprint data=ap_math_students_by_school;
 
 run;
 
-* Sort summary_by_school file just created by descending SchoolAPEnrollment
+* This is to investigate which schools offer the most opportunity for 
+  students in terms of classes at the AP level in math as well as 
+  participation levels in terms of enrollment. This is of interest 
+  to see where geographically and demographically these districts are
+  located, whether in terms of more or less household income and 
+  whether urban/suburban locales. 
+
+  Create a top-10 list of schools with the highest enrollment of students
+  in AP-math. Prepare for use in proc freq for display by first sorting 
+  summary_by_school file just created by descending SchoolAPEnrollment
+  and output results to new file, ap_summary_by_school
   for use in creating table in proc freq;
 
 proc sort data=summary_by_school out=ap_summary_by_school;
@@ -602,17 +655,15 @@ run;
   SchoolAPEnrollment;
 
 proc freq data=ap_summary_by_school noprint;
-    by descending SchoolAPEnrollment;
 
-    tables SchoolName*SchoolAPEnrollment / out=SchoolAPTotals;
+    tables SchoolName*SchoolAPEnrollment / nopercent nocum 
+    output out=SchoolAPTotals;
 
   * Embed a data statement to limit the number of observations displayed.
 	Tried doing this in a proper separate data statement, but for some 
 	reason it didn't work the same way;
 
-    data SchoolAPTotals;
-    set SchoolAPTotals(obs=10);
+data SchoolAPTotals10;
+    set SchoolAPTotals (obs=10);
 
 run;
-
-
